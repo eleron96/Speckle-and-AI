@@ -1,1 +1,5 @@
 .idea/
+results.db
+__pycache__/
+
+
