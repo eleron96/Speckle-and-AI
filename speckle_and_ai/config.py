@@ -6,6 +6,8 @@ from specklepy.api.credentials import get_default_account
 HOST = 'https://speckle.xyz/'
 STREAM_ID = 'f378cb19eb'
 
+# STREAM_ID = 'a531e8ec43'
+
 # Create and authenticate the client
 client = SpeckleClient(host=HOST)
 account = get_default_account()

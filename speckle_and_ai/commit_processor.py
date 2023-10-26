@@ -40,5 +40,8 @@ def list_commits():
     commits = client.commit.list(STREAM_ID)
     for idx, commit in enumerate(commits):
         print(
-            f"[{idx + 1}] Commit ID: {commit.id}, Upload date: {getattr(commit, 'createdAt', 'Unknown')}, File name: {getattr(commit, 'message', 'Unknown')}")
+            f"[{idx + 1}] "
+            f"File name: {getattr(commit, 'message', 'Unknown')}, "
+            f"Upload date: {getattr(commit, 'createdAt', 'Unknown')}, "
+            f"Commit ID: {commit.id}")
     return commits
