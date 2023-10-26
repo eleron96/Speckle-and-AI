@@ -1,7 +1,7 @@
 # main.py
-from authentication import authenticate_client
-from commit_processor import process_commits, list_commits
-from db_handler import get_previous_results, setup_database
+from speckle_and_ai.authentication import authenticate_client
+from speckle_and_ai.commit_processor import process_commits, list_commits
+from speckle_and_ai.db_handler import get_previous_results, setup_database
 
 
 def main_menu():
