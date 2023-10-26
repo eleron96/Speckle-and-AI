@@ -8,6 +8,7 @@ readme = "README.md"
 [tool.poetry.dependencies]
 python = "^3.11"
 specklepy = "^2.17.6"
+plotly = "^5.18.0"
 
 
 [build-system]

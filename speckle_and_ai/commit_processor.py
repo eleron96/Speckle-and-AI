@@ -1,9 +1,9 @@
 # commit_processor.py
-from config import client, STREAM_ID
-from utilities import count_walls
+from .config import client, STREAM_ID
+from .utilities import count_walls
 from specklepy.api import operations
 from specklepy.transports.server import ServerTransport
-from db_handler import save_result
+from .db_handler import save_result
 
 
 def process_commits(commits_to_process=None):
