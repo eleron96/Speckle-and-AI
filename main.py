@@ -1,7 +1,9 @@
 # main.py
 from speckle_and_ai.authentication import authenticate_client
-from speckle_and_ai.commit_processor import process_commits, list_commits
+from speckle_and_ai.commit_processor import process_commits, list_commits, \
+    list_branches
 from speckle_and_ai.db_handler import get_previous_results, setup_database
+from speckle_and_ai.utilities import count_walls, count_rooms
 
 def main_menu():
     while True:
@@ -18,8 +20,14 @@ def main_menu():
             # Authenticate client
             authenticate_client()
 
-            # List available commits and ask user to select
-            available_commits = list_commits()
+            # List available branches and ask user to select
+            available_branches = list_branches()
+            selected_branch_idx = input(
+                f"Select a branch number (1-{len(available_branches)}): ")
+            selected_branch = available_branches[int(selected_branch_idx) - 1]
+
+            # List available commits from the selected branch and ask user to select
+            available_commits = list_commits(selected_branch)
             selected_commit_idx = input(
                 f"Select a commit number (1-{len(available_commits)}) or press Enter to process all: ")
 
@@ -57,7 +65,7 @@ def main_menu():
                 print("No previous results found.")
 
         elif choice == "3":
-            commits = list_commits()
+            commits = list_commits(selected_branch)
 
             if not commits:
                 print("No commits found.")
@@ -91,6 +99,7 @@ def main_menu():
 
         else:
             print("Invalid choice. Please select 1, 2, 3, or 4.")
+
 
 if __name__ == "__main__":
     setup_database()  # Ensure the database and table are set up

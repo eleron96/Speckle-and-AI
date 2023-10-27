@@ -12,3 +12,21 @@ def count_walls(obj, wall_count=0):
             wall_count = count_walls(nested_obj, wall_count)
 
     return wall_count
+
+
+def count_rooms(obj, room_count=0):
+    # Проверка на уровне объекта
+    if getattr(obj, 'category', None) == 'Помещения':
+        room_count += 1
+
+    # Если у нас есть 'elements', то мы должны проверить каждый элемент внутри 'elements'
+    elements = getattr(obj, 'elements', None)
+    if elements and isinstance(elements, list):
+        for element in elements:
+            # Рекурсивно проверяем вложенные 'elements'
+            room_count = count_rooms(element, room_count)
+
+    return room_count
+
+
+
