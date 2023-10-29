@@ -1,7 +1,7 @@
 # main.py
 from speckle_and_ai.authentication import authenticate_client
 from speckle_and_ai.commit_processor import process_commits, list_commits, \
-    list_branches
+    list_branches, process_commits_checks
 from speckle_and_ai.db_handler import get_previous_results, setup_database
 from speckle_and_ai.utilities import count_walls, count_rooms
 
@@ -64,35 +64,52 @@ def main_menu():
             else:
                 print("No previous results found.")
 
+
+
+
         elif choice == "3":
-            results = get_previous_results()
+
+            # List available branches and ask user to select
+
+            available_branches = list_branches()
+
+            selected_branch_idx = input(
+
+                f"Select a branch number (1-{len(available_branches)}): ")
+
+            selected_branch = available_branches[int(selected_branch_idx) - 1]
+
             commits = list_commits(selected_branch)
 
             if not commits:
                 print("No commits found.")
+
                 continue
 
             selected_commit_idxs = input(
-                "Choose commit numbers separated by commas (e.g., 1,3,5): \n").split(',')
 
-            # Generate ASCII graph for selected commits
-            max_elements = max(
-                [getattr(commit, 'totalChildrenCount', 0) for commit in commits])
+                "Choose commit numbers separated by commas (e.g., 1,3,5): \n").split(
+                ',')
 
             print("\n=== Commit Summary ===")
+
             for idx in selected_commit_idxs:
+
                 try:
+
                     commit_idx = int(idx) - 1
+
                     commit = commits[commit_idx]
-                    bar_length = int(
-                        (getattr(commit, 'totalChildrenCount', 0) / max_elements) * 50)
-                    bar = '█' * bar_length
-                    print("-" * 35)
-                    print(f"Commit ID: {commit.id}")
-                    print(f"Graph: {bar} ({getattr(commit, 'totalChildrenCount', 0)})")
+
+                    process_commits_checks([commit])
+
                 except (ValueError, IndexError):
+
                     print(f"Invalid commit number: {idx}")
-            print("=" * 35)
+
+            print("=" * 30)
+
+
 
         elif choice == "4":
             print("Exiting the program. Goodbye!")

@@ -30,6 +30,28 @@ def process_commits(commits_to_process=None):
         print("------------------------------")
         return res
 
+def process_commits_checks(commits_to_process=None):
+    if not commits_to_process:
+        commits_to_process = client.commit.list(STREAM_ID)
+
+    for commit in commits_to_process:
+        transport = ServerTransport(client=client, stream_id=STREAM_ID)
+        res = operations.receive(commit.referencedObject, transport)
+
+        upload_date = getattr(commit, 'createdAt', None)
+        file_name = getattr(commit, 'message', None)
+        object_count = getattr(res, 'totalChildrenCount', None)
+
+        wall_count = count_walls(res)
+        room_count = count_rooms(res)  # Count rooms
+
+        save_result(commit.id, upload_date, file_name, object_count, wall_count)
+
+        print(f"File name: {file_name}")
+        print(f"Number of elements: {object_count}")
+        print(f"Number of rooms: {room_count}\n")  # Print room count
+        return res
+
 def list_commits(branch_name):
     commits = client.commit.list(STREAM_ID)
     filtered_commits = [commit for commit in commits if getattr(commit, 'branchName', '') == branch_name]
@@ -40,6 +62,8 @@ def list_commits(branch_name):
             f"Upload date: {getattr(commit, 'createdAt', 'Unknown')}, "
             f"Commit ID: {commit.id}")
     return filtered_commits
+
+
 
 
 
