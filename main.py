@@ -65,6 +65,7 @@ def main_menu():
                 print("No previous results found.")
 
         elif choice == "3":
+            results = get_previous_results()
             commits = list_commits(selected_branch)
 
             if not commits:
