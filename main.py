@@ -89,16 +89,42 @@ def main_menu():
             selected_commit_idxs = input(
                 "Choose commit numbers separated by commas (e.g., 1,3,5): \n").split(
                 ',')
-            print("\n=== Commit Summary ===")
+
+            commit_datas = []
             for idx in selected_commit_idxs:
                 try:
                     commit_idx = int(idx) - 1
                     commit = commits[commit_idx]
                     commit_data = process_single_commit(commit)
+                    commit_datas.append(commit_data)
                     print_commit_summary_for_check(commit_data)
                 except (ValueError, IndexError):
                     print(f"Invalid commit number: {idx}")
-            print("=" * 30)
+
+            # Находим коммит с самой последней датой
+            latest_commit_data = max(commit_datas,
+                                     key=lambda x: x['upload_date'])
+
+            # Сравниваем комнаты каждого коммита с самым последним коммитом
+            for commit_data in commit_datas:
+                if commit_data['commit_id'] == latest_commit_data['commit_id']:
+                    continue  # Пропускаем сравнение с самим собой
+
+                # Сравниваем room_ids между коммитами
+                added_rooms = set(latest_commit_data['room_ids']) - set(
+                    commit_data['room_ids'])
+                removed_rooms = set(commit_data['room_ids']) - set(
+                    latest_commit_data['room_ids'])
+
+                # Выводим разницу в количестве комнат
+                if added_rooms:
+                    print(
+                        f"Added rooms from {commit_data['file_name']} compared to {latest_commit_data['file_name']}: {len(added_rooms)}")
+                if removed_rooms:
+                    print(
+                        f"Removed rooms from {commit_data['file_name']} compared to {latest_commit_data['file_name']}: {len(removed_rooms)}")
+                print("------------------------------")
+
 
         elif choice == "4":
             print("Exiting the program. Goodbye!")

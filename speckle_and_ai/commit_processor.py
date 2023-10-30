@@ -6,12 +6,17 @@ from specklepy.transports.server import ServerTransport
 from .db_handler import DatabaseHandler
 
 db = DatabaseHandler()
+
+
 def get_commits(branch_name=None):
     """Retrieve commits. If branch_name is provided, filter by branch."""
-    commits = client.commit.list(STREAM_ID)
+    limit = 100
+    commits = client.commit.list(STREAM_ID, limit=limit)
+
     if branch_name:
         commits = [commit for commit in commits if
                    getattr(commit, 'branchName', '') == branch_name]
+
     return commits
 
 
@@ -25,7 +30,7 @@ def process_single_commit(commit):
     file_name = getattr(commit, 'message', None)
     object_count = getattr(res, 'totalChildrenCount', None)
     wall_count = count_walls(res)
-    room_count = count_rooms(res)
+    room_count, room_ids = count_rooms(res)
 
     db.save_result(commit.id, upload_date, file_name, object_count, wall_count)
 
@@ -35,7 +40,8 @@ def process_single_commit(commit):
         "file_name": file_name,
         "object_count": object_count,
         "wall_count": wall_count,
-        "room_count": room_count
+        "room_count": room_count,
+        "room_ids": room_ids
     }
 
 
