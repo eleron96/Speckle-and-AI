@@ -19,6 +19,7 @@ def process_single_commit(commit):
     """Process a single commit and return its data."""
     transport = ServerTransport(client=client, stream_id=STREAM_ID)
     res = operations.receive(commit.referencedObject, transport)
+    print(res)
 
     upload_date = getattr(commit, 'createdAt', None)
     file_name = getattr(commit, 'message', None)

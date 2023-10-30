@@ -5,6 +5,17 @@ from speckle_and_ai.commit_processor import process_commits, list_commits, \
 from speckle_and_ai.db_handler import DatabaseHandler
 
 db = DatabaseHandler()
+
+
+def print_commit_summary_for_check(commit_data):
+    """Print a simplified summary of the processed commit for the
+    check option."""
+    print(f"File name: {commit_data['file_name']}")
+    print(f"Number of elements: {commit_data['object_count']}")
+    print(f"Number of rooms: {commit_data['room_count']}")
+    print("------------------------------")
+
+
 def main_menu():
     while True:
         print("\n=== Speckle and AI Application ===")
@@ -13,14 +24,6 @@ def main_menu():
         print("[3] Check")
         print("[4] Exit")
         print("=" * 35)
-
-        def print_commit_summary_for_check(commit_data):
-            """Print a simplified summary of the processed commit for the
-            check option."""
-            print(f"File name: {commit_data['file_name']}")
-            print(f"Number of elements: {commit_data['object_count']}")
-            print(f"Number of rooms: {commit_data['room_count']}")
-            print("------------------------------")
 
         choice = input("Please select an option (1/2/3/4): ")
 
