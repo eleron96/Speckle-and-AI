@@ -2,6 +2,7 @@
 results.db
 __pycache__/
 speckle_and_ai/config.py
+.env
 
 
 

@@ -9,6 +9,7 @@ readme = "README.md"
 python = "^3.11"
 specklepy = "^2.17.6"
 plotly = "^5.18.0"
+python-decouple = "^3.8"
 
 
 [build-system]
