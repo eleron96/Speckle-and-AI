@@ -1,74 +1,83 @@
 from .config import client, STREAM_ID
-from .utilities import count_walls, count_rooms
+from .wall_utilities import count_walls
+from .room_utilities import count_rooms
 from specklepy.api import operations
 from specklepy.transports.server import ServerTransport
-from .db_handler import save_result
+from .db_handler import DatabaseHandler
+
+db = DatabaseHandler()
+def get_commits(branch_name=None):
+    """Retrieve commits. If branch_name is provided, filter by branch."""
+    commits = client.commit.list(STREAM_ID)
+    if branch_name:
+        commits = [commit for commit in commits if
+                   getattr(commit, 'branchName', '') == branch_name]
+    return commits
+
+
+def process_single_commit(commit):
+    """Process a single commit and return its data."""
+    transport = ServerTransport(client=client, stream_id=STREAM_ID)
+    res = operations.receive(commit.referencedObject, transport)
+
+    upload_date = getattr(commit, 'createdAt', None)
+    file_name = getattr(commit, 'message', None)
+    object_count = getattr(res, 'totalChildrenCount', None)
+    wall_count = count_walls(res)
+    room_count = count_rooms(res)
+
+    db.save_result(commit.id, upload_date, file_name, object_count, wall_count)
+
+    return {
+        "commit_id": commit.id,
+        "upload_date": upload_date,
+        "file_name": file_name,
+        "object_count": object_count,
+        "wall_count": wall_count,
+        "room_count": room_count
+    }
+
 
 def process_commits(commits_to_process=None):
+    """Process multiple commits."""
     if not commits_to_process:
-        commits_to_process = client.commit.list(STREAM_ID)
+        commits_to_process = get_commits()
 
+    results = []
     for commit in commits_to_process:
-        transport = ServerTransport(client=client, stream_id=STREAM_ID)
-        res = operations.receive(commit.referencedObject, transport)
+        result = process_single_commit(commit)
+        results.append(result)
+        print_commit_summary(result)
 
-        upload_date = getattr(commit, 'createdAt', None)
-        file_name = getattr(commit, 'message', None)
-        object_count = getattr(res, 'totalChildrenCount', None)
+    return results
 
-        wall_count = count_walls(res)
-        room_count = count_rooms(res)  # Count rooms
 
-        save_result(commit.id, upload_date, file_name, object_count, wall_count)
+def print_commit_summary(commit_data):
+    """Print a summary of the processed commit."""
+    print(f"Commit ID: {commit_data['commit_id']}")
+    print(f"Upload date: {commit_data['upload_date']}")
+    print(f"File name: {commit_data['file_name']}")
+    print(f"Number of elements: {commit_data['object_count']}")
+    print(f"Number of wall elements: {commit_data['wall_count']}")
+    print(f"Number of rooms: {commit_data['room_count']}")
+    print("------------------------------")
 
-        print(f"Commit ID: {commit.id}")
-        print(f"Upload date: {upload_date}")
-        print(f"File name: {file_name}")
-        print(f"Number of elements: {object_count}")
-        print(f"Number of wall elements: {wall_count}")
-        print(f"Number of rooms: {room_count}")  # Print room count
-        print("------------------------------")
-        return res
-
-def process_commits_checks(commits_to_process=None):
-    if not commits_to_process:
-        commits_to_process = client.commit.list(STREAM_ID)
-
-    for commit in commits_to_process:
-        transport = ServerTransport(client=client, stream_id=STREAM_ID)
-        res = operations.receive(commit.referencedObject, transport)
-
-        upload_date = getattr(commit, 'createdAt', None)
-        file_name = getattr(commit, 'message', None)
-        object_count = getattr(res, 'totalChildrenCount', None)
-
-        wall_count = count_walls(res)
-        room_count = count_rooms(res)  # Count rooms
-
-        save_result(commit.id, upload_date, file_name, object_count, wall_count)
-
-        print(f"File name: {file_name}")
-        print(f"Number of elements: {object_count}")
-        print(f"Number of rooms: {room_count}\n")  # Print room count
-        return res
 
 def list_commits(branch_name):
-    commits = client.commit.list(STREAM_ID)
-    filtered_commits = [commit for commit in commits if getattr(commit, 'branchName', '') == branch_name]
-    for idx, commit in enumerate(filtered_commits):
+    """List commits for a specific branch."""
+    commits = get_commits(branch_name)
+    for idx, commit in enumerate(commits):
         print(
             f"[{idx + 1}] "
             f"File name: {getattr(commit, 'message', 'Unknown')}, "
             f"Upload date: {getattr(commit, 'createdAt', 'Unknown')}, "
-            f"Commit ID: {commit.id}")
-    return filtered_commits
-
-
-
+            f"Commit ID: {commit.id}"
+        )
+    return commits
 
 
 def list_branches():
-    # Используйте Speckle API для получения списка веток.
+    """List available branches."""
     branches = client.branch.list(STREAM_ID)
     for idx, branch in enumerate(branches):
         print(f"[{idx + 1}] {branch.name}")

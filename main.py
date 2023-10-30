@@ -1,11 +1,10 @@
 # main.py
 from speckle_and_ai.authentication import authenticate_client
 from speckle_and_ai.commit_processor import process_commits, list_commits, \
-    list_branches, process_commits_checks
-from speckle_and_ai.db_handler import get_previous_results, setup_database
-from speckle_and_ai.utilities import count_walls, count_rooms
+    list_branches, process_single_commit
+from speckle_and_ai.db_handler import DatabaseHandler
 
-
+db = DatabaseHandler()
 def main_menu():
     while True:
         print("\n=== Speckle and AI Application ===")
@@ -14,6 +13,14 @@ def main_menu():
         print("[3] Check")
         print("[4] Exit")
         print("=" * 35)
+
+        def print_commit_summary_for_check(commit_data):
+            """Print a simplified summary of the processed commit for the
+            check option."""
+            print(f"File name: {commit_data['file_name']}")
+            print(f"Number of elements: {commit_data['object_count']}")
+            print(f"Number of rooms: {commit_data['room_count']}")
+            print("------------------------------")
 
         choice = input("Please select an option (1/2/3/4): ")
 
@@ -52,7 +59,7 @@ def main_menu():
 
         elif choice == "2":
             # Display previous results from the database
-            results = get_previous_results()
+            results = db.get_previous_results()
             if results:
                 print("\n=== Previous Results ===")
                 for result in results:
@@ -84,7 +91,8 @@ def main_menu():
                 try:
                     commit_idx = int(idx) - 1
                     commit = commits[commit_idx]
-                    process_commits_checks([commit])
+                    commit_data = process_single_commit(commit)
+                    print_commit_summary_for_check(commit_data)
                 except (ValueError, IndexError):
                     print(f"Invalid commit number: {idx}")
             print("=" * 30)
@@ -98,5 +106,5 @@ def main_menu():
 
 
 if __name__ == "__main__":
-    setup_database()  # Ensure the database and table are set up
+    db.setup_database()  # Ensure the database and table are set up
     main_menu()
