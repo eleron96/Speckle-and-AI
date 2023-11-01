@@ -24,13 +24,16 @@ def process_single_commit(commit):
     """Process a single commit and return its data."""
     transport = ServerTransport(client=client, stream_id=STREAM_ID)
     res = operations.receive(commit.referencedObject, transport)
-    print(res)
-
     upload_date = getattr(commit, 'createdAt', None)
     file_name = getattr(commit, 'message', None)
     object_count = getattr(res, 'totalChildrenCount', None)
     wall_count = count_walls(res)
-    room_count, room_ids = count_rooms(res)
+    room_count, room_ids, room_types = count_rooms(res)
+
+    print(f"Тип помещения: \n")
+    for room_type, count in room_types.items():
+        print(f"{room_type} - {count}")
+
 
     db.save_result(commit.id, upload_date, file_name, object_count, wall_count)
 
