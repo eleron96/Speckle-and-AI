@@ -1,3 +1,4 @@
+[![Maintainability](https://api.codeclimate.com/v1/badges/58743ca4ae6635619d7a/maintainability)](https://codeclimate.com/github/eleron96/Speckle-and-AI/maintainability)
 
 # Speckle Stream Processor 🚀
 
