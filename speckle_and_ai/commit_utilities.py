@@ -2,6 +2,13 @@ from speckle_and_ai.authentication import authenticate_client
 from speckle_and_ai.commit_processor import list_commits, list_branches, \
     process_commits, process_single_commit
 
+def check_uniqueness_across_branches():
+    branches = list_branches()
+    for branch in branches:
+        commits = list_commits(branch)
+        if commits:
+            last_commit = commits[0]  # берем последний коммит
+            process_single_commit(last_commit)
 
 def print_commit_summary_for_check(commit_data):
     print(f"File name: {commit_data['file_name']}")
