@@ -17,7 +17,7 @@ def check_uniqueness_across_branches():
             all_commits_data.append(commit_data)
 
             # Выводим данные для каждого коммита
-            print_commit_summary(commit_data)
+            print_commit_summary(commit_data, branch)
 
     # Выводим общий итог
     print_total_summary(all_commits_data)
@@ -32,17 +32,94 @@ def check_uniqueness_in_branch(branch_name):
     commits = get_commits(branch_name)
     for commit in commits:
         check_room_name_uniqueness(commit)
+
+def determine_alphabet(letter):
+    if 'а' <= letter <= 'я' or 'А' <= letter <= 'Я':
+        return 'cyrillic'
+    elif 'a' <= letter <= 'z' or 'A' <= letter <= 'Z':
+        return 'latin'
+    return None
+
+# def check_room_name_uniqueness(branch_name=None):
+#     commits = get_commits(branch_name)
+#     room_names = {}
+#     for commit in commits:
+#         commit_data = process_single_commit(commit)
+#         room_types = commit_data.get("room_types", {})
+#         for room_type, count in room_types.items():
+#             alphabets = set()
+#             for letter in room_type:
+#                 alphabet = determine_alphabet(letter)
+#                 if alphabet:
+#                     alphabets.add(alphabet)
+#             if len(alphabets) > 1:
+#                 print(f"\033[91m\033[1m{room_type} - использует разные алфавиты\033[0m")
+#             else:
+#                 room_names[room_type] = 1
+
+confusing_letters = {
+    'a': 'а',
+    'o': 'о',
+    'e': 'е',
+    'p': 'р',
+    'c': 'с',
+    'k': 'к',
+    'x': 'х',
+    'B': 'В',
+    'M': 'М',
+    'H': 'Н',
+    'K': 'К',
+    'X': 'Х',
+    'A': 'А',
+    'O': 'О',
+    'P': 'Р',
+    'C': 'С',
+    'T': 'Т',
+    'E': 'Е'
+}
 def check_room_name_uniqueness(branch_name=None):
-    commits = get_commits(branch_name)
+    all_commits = []
+    branches = list_branches(print_to_console=False)
+    for branch in branches:
+        commits = get_commits(branch)
+        all_commits.extend(commits)
+
     room_names = {}
-    for commit in commits:
+    for commit in all_commits:
         commit_data = process_single_commit(commit)
         room_types = commit_data.get("room_types", {})
         for room_type, count in room_types.items():
-            if room_type in room_names:
-                print(f"Неуникальное имя помещения: {room_type} в коммите {commit.id}")
-            else:
-                room_names[room_type] = 1
+            room_names[room_type] = 1
+
+    error_messages = set()  # Используем множество для хранения уникальных сообщений об ошибках
+    for name in room_names:
+        matches = potential_matches(name, room_names.keys())
+        for match in matches:
+            # Убедимся, что сообщение добавляется в множество только один раз
+            sorted_names = sorted([name, match])
+            error_message = f"\033[91m\033[1m{sorted_names[0]} и {sorted_names[1]} - потенциальные совпадения\033[0m"
+            error_messages.add(error_message)  # Добавляем сообщение в множество
+
+    for error_message in error_messages:
+        print(error_message)
+
+
+
+def potential_matches(name, all_names):
+    matches = []
+    for other_name in all_names:
+        if other_name != name and len(name) == len(other_name):
+            is_potential_match = False
+            for i in range(len(name)):
+                if name[i] in confusing_letters and confusing_letters[name[i]] == other_name[i]:
+                    is_potential_match = True
+                    break
+                elif other_name[i] in confusing_letters and confusing_letters[other_name[i]] == name[i]:
+                    is_potential_match = True
+                    break
+            if is_potential_match:
+                matches.append(other_name)
+    return matches
 
 
 def print_commit_summary_for_check(commit_data):

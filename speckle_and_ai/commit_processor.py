@@ -88,15 +88,15 @@ def process_commits(commits_to_process=None):
     return results
 
 
-def print_commit_summary(commit_data):
-    """Print a summary of the processed commit."""
+def print_commit_summary(commit_data, branch_name):
+    print(f"Branch name: {branch_name}")
     print(f"File name: {commit_data['file_name']}")
     print(f"Commit ID: {commit_data['commit_id']}")
     print(f"Upload date: {commit_data['upload_date']}")
     print(f"Number of elements: {commit_data['object_count']}")
     print(f"Number of wall elements: {commit_data['wall_count']}")
     print(f"Number of rooms: {commit_data['room_count']}")
-    print("------------------------------")
+    print("-" * 20)
 
 
 def list_commits(branch_name, print_to_console=True):
