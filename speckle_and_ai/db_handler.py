@@ -35,8 +35,3 @@ class DatabaseHandler:
             results = cursor.fetchall()
         return results
 
-# Пример использования:
-# db = DatabaseHandler()
-# db.save_result("commit_id_123", "2023-10-30", "file_name_example", 100, 50)
-# results = db.get_previous_results()
-# print(results)
