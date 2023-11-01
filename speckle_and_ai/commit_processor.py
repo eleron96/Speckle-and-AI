@@ -20,6 +20,30 @@ def get_commits(branch_name=None):
     return commits
 
 
+def print_total_summary(all_commits_data):
+    total_elements = sum(
+        commit_data['object_count'] for commit_data in all_commits_data)
+    total_walls = sum(
+        commit_data['wall_count'] for commit_data in all_commits_data)
+    total_rooms = sum(
+        commit_data['room_count'] for commit_data in all_commits_data)
+
+    # Собираем информацию о типах квартир
+    total_room_types = {}
+    for commit_data in all_commits_data:
+        for room_type, count in commit_data['room_types'].items():
+            total_room_types[room_type] = total_room_types.get(room_type,
+                                                               0) + count
+
+    print("Общий итог:")
+    print(f"Number of elements: {total_elements}")
+    print(f"Number of wall elements: {total_walls}")
+    print(f"Number of rooms: {total_rooms}")
+    print("Типы квартир:")
+    for room_type, count in total_room_types.items():
+        print(f"{room_type} - {count}")
+    print("------------------------------")
+
 
 def process_single_commit(commit):
     """Process a single commit and return its data."""
@@ -45,6 +69,7 @@ def process_single_commit(commit):
         "object_count": object_count,
         "wall_count": wall_count,
         "room_count": room_count,
+        "room_types": room_types,
         "room_ids": room_ids
     }
 

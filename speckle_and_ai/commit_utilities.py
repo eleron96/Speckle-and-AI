@@ -1,14 +1,49 @@
 from speckle_and_ai.authentication import authenticate_client
 from speckle_and_ai.commit_processor import list_commits, list_branches, \
-    process_commits, process_single_commit
+    process_commits, process_single_commit, get_commits, print_commit_summary, \
+    print_total_summary
+
 
 def check_uniqueness_across_branches():
     branches = list_branches()
+    all_commits_data = []
+
+    # Извлекаем последний коммит из каждой ветки
     for branch in branches:
         commits = list_commits(branch)
         if commits:
             last_commit = commits[0]  # берем последний коммит
-            process_single_commit(last_commit)
+            commit_data = process_single_commit(last_commit)
+            all_commits_data.append(commit_data)
+
+            # Выводим данные для каждого коммита
+            print_commit_summary(commit_data)
+
+    # Выводим общий итог
+    print_total_summary(all_commits_data)
+
+    # Проверяем уникальность имен помещений
+    check_room_name_uniqueness(all_commits_data)
+
+    return all_commits_data
+
+
+def check_uniqueness_in_branch(branch_name):
+    commits = get_commits(branch_name)
+    for commit in commits:
+        check_room_name_uniqueness(commit)
+def check_room_name_uniqueness(branch_name=None):
+    commits = get_commits(branch_name)
+    room_names = {}
+    for commit in commits:
+        commit_data = process_single_commit(commit)
+        room_types = commit_data.get("room_types", {})
+        for room_type, count in room_types.items():
+            if room_type in room_names:
+                print(f"Неуникальное имя помещения: {room_type} в коммите {commit.id}")
+            else:
+                room_names[room_type] = 1
+
 
 def print_commit_summary_for_check(commit_data):
     print(f"File name: {commit_data['file_name']}")

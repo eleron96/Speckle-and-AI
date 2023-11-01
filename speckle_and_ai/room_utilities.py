@@ -31,3 +31,11 @@ def count_rooms(obj):
                 room_types[key] = value
 
     return room_count, room_ids, room_types
+
+def check_room_name_uniqueness(all_commits_data):
+    all_room_ids = [room_id for commit_data in all_commits_data for room_id in commit_data['room_ids']]
+    unique_room_ids = set(all_room_ids)
+    if len(all_room_ids) != len(unique_room_ids):
+        print("Есть неуникальные имена помещений!")
+    else:
+        print("Все имена помещений уникальны!")

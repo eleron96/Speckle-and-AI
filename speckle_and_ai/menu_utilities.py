@@ -3,7 +3,8 @@ def display_main_menu():
     print("[1] Start")
     print("[2] View Previous Results")
     print("[3] Check")
-    print("[4] Exit")
+    print("[4] Проверить уникальность имен помещений")
+    print("[5] Exit")
     print("=" * 35)
 
 def get_user_choice():
