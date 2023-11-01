@@ -35,14 +35,14 @@ def print_total_summary(all_commits_data):
             total_room_types[room_type] = total_room_types.get(room_type,
                                                                0) + count
 
-    print("Общий итог:")
+    print(f"{'Общий итог:':-^35}")
     print(f"Number of elements: {total_elements}")
     print(f"Number of wall elements: {total_walls}")
     print(f"Number of rooms: {total_rooms}")
-    print("Типы квартир:")
+    print(f"{'Типы квартир':-^35}")
     for room_type, count in total_room_types.items():
         print(f"{room_type} - {count}")
-    print("------------------------------")
+    print("******************************")
 
 
 def process_single_commit(commit):
@@ -55,9 +55,7 @@ def process_single_commit(commit):
     wall_count = count_walls(res)
     room_count, room_ids, room_types = count_rooms(res)
 
-    print(f"Тип помещения: \n")
-    for room_type, count in room_types.items():
-        print(f"{room_type} - {count}")
+
 
 
     db.save_result(commit.id, upload_date, file_name, object_count, wall_count)
@@ -72,7 +70,9 @@ def process_single_commit(commit):
         "room_types": room_types,
         "room_ids": room_ids
     }
-
+    print(f"Тип помещения: \n")
+    for room_type, count in room_types.items():
+        print(f"{room_type} - {count}")
 
 def process_commits(commits_to_process=None):
     """Process multiple commits."""
@@ -90,31 +90,35 @@ def process_commits(commits_to_process=None):
 
 def print_commit_summary(commit_data):
     """Print a summary of the processed commit."""
+    print(f"File name: {commit_data['file_name']}")
     print(f"Commit ID: {commit_data['commit_id']}")
     print(f"Upload date: {commit_data['upload_date']}")
-    print(f"File name: {commit_data['file_name']}")
     print(f"Number of elements: {commit_data['object_count']}")
     print(f"Number of wall elements: {commit_data['wall_count']}")
     print(f"Number of rooms: {commit_data['room_count']}")
     print("------------------------------")
 
 
-def list_commits(branch_name):
+def list_commits(branch_name, print_to_console=True):
     """List commits for a specific branch."""
     commits = get_commits(branch_name)
-    for idx, commit in enumerate(commits):
-        print(
-            f"[{idx + 1}] "
-            f"File name: {getattr(commit, 'message', 'Unknown')}, "
-            f"Upload date: {getattr(commit, 'createdAt', 'Unknown')}, "
-            f"Commit ID: {commit.id}"
-        )
+    if print_to_console:
+        for idx, commit in enumerate(commits):
+            print(
+                f"[{idx + 1}] "
+                f"File name: {getattr(commit, 'message', 'Unknown')}, "
+                f"Upload date: {getattr(commit, 'createdAt', 'Unknown')}, "
+                f"Commit ID: {commit.id}"
+            )
     return commits
 
 
-def list_branches():
+
+def list_branches(print_to_console=True):
     """List available branches."""
     branches = client.branch.list(STREAM_ID)
-    for idx, branch in enumerate(branches):
-        print(f"[{idx + 1}] {branch.name}")
+    if print_to_console:
+        for idx, branch in enumerate(branches):
+            print(f"[{idx + 1}] {branch.name}")
     return [branch.name for branch in branches]
+

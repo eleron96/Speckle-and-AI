@@ -5,12 +5,12 @@ from speckle_and_ai.commit_processor import list_commits, list_branches, \
 
 
 def check_uniqueness_across_branches():
-    branches = list_branches()
+    branches = list_branches(print_to_console=False)
     all_commits_data = []
 
     # Извлекаем последний коммит из каждой ветки
     for branch in branches:
-        commits = list_commits(branch)
+        commits = commits = list_commits(branch, print_to_console=False)
         if commits:
             last_commit = commits[0]  # берем последний коммит
             commit_data = process_single_commit(last_commit)
