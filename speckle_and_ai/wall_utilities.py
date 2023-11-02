@@ -6,7 +6,8 @@ def count_walls(obj):
     if getattr(obj, 'category', None) == 'Walls':
         wall_count += 1
 
-    # If we have 'elements' or 'objects', we need to check each element inside them
+    # If we have 'elements' or 'objects', we need to check each element
+    # inside them
     for element in getattr(obj, 'elements', []) or getattr(obj, 'objects', []):
         wall_count += count_walls(element)
 

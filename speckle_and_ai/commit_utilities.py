@@ -6,44 +6,6 @@ from speckle_and_ai.commit_processor import list_commits, list_branches, \
     print_total_summary
 
 
-def check_uniqueness_across_branches():
-    branches = list_branches(print_to_console=False)
-    all_commits_data = []
-
-    # Извлекаем последний коммит из каждой ветки
-    for branch in branches:
-        commits = list_commits(branch, print_to_console=False)
-        if commits:
-            last_commit = commits[0]  # берем последний коммит
-            commit_data = process_single_commit(last_commit)
-            all_commits_data.append(commit_data)
-
-            # Выводим данные для каждого коммита
-            print_commit_summary(commit_data, branch)
-
-    # Выводим общий итог
-    print_total_summary(all_commits_data)
-
-    # Проверяем уникальность имен помещений
-    check_room_name_uniqueness(all_commits_data)
-
-    return all_commits_data
-
-
-def check_uniqueness_in_branch(branch_name):
-    commits = get_commits(branch_name)
-    for commit in commits:
-        check_room_name_uniqueness(commit)
-
-
-def determine_alphabet(letter):
-    if 'а' <= letter <= 'я' or 'А' <= letter <= 'Я':
-        return 'cyrillic'
-    elif 'a' <= letter <= 'z' or 'A' <= letter <= 'Z':
-        return 'latin'
-    return None
-
-
 confusing_letters = {
     'a': 'а',
     'o': 'о',
@@ -80,7 +42,8 @@ def check_room_name_uniqueness():
         for room_type, count in room_types.items():
             room_names[room_type] = 1
 
-    error_messages = set()  # Используем множество для хранения уникальных сообщений об ошибках
+    error_messages = set()  # Используем множество для хранения уникальных
+    # сообщений об ошибках
     for name in room_names:
         matches = potential_matches(name, room_names.keys())
         for match in matches:
@@ -127,7 +90,8 @@ def start_option():
     selected_branch = available_branches[int(selected_branch_idx) - 1]
     available_commits = list_commits(selected_branch)
     selected_commit_idx = input(
-        f"Select a commit number (1-{len(available_commits)}) or press Enter to process all: ")
+        f"Select a commit number (1-{len(available_commits)}) or press Enter "
+        f"to process all: ")
     if selected_commit_idx:
         selected_commits = [available_commits[int(selected_commit_idx) - 1]]
         process_commits(selected_commits)
@@ -169,7 +133,8 @@ def check_option():
 
 
 def check_potential_matches():
-    """Check for potential room name matches across the latest commits of all branches."""
+    """Check for potential room name matches across the latest commits of all
+    branches."""
     all_commits = []
     branches = list_branches(print_to_console=False)
     for branch in branches:
@@ -196,7 +161,8 @@ def check_potential_matches():
                     match, name) not in checked_pairs:
                 print()
                 print(
-                    f"\033[91m\033[1m{name} и {match} - потенциальные совпадения\033[0m")
+                    f"\033[91m\033[1m{name} и {match} - потенциальные "
+                    f"совпадения\033[0m")
                 found_matches = True
                 checked_pairs.add((name, match))
 
