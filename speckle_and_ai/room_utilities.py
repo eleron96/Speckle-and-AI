@@ -12,7 +12,8 @@ def count_rooms(obj):
         if hasattr(obj, "parameters"):
             param_obj = obj.parameters
             if hasattr(param_obj, "КГ_Тип помещения короткий"):
-                param_value = getattr(param_obj, 'КГ_Тип помещения короткий').value
+                param_value = getattr(param_obj,
+                                      'КГ_Тип помещения короткий').value
                 # print(f"Found room type: {param_value}")  # Debug message
                 if param_value in room_types:
                     room_types[param_value] += 1
@@ -32,8 +33,10 @@ def count_rooms(obj):
 
     return room_count, room_ids, room_types
 
+
 def check_room_name_uniqueness(all_commits_data):
-    all_room_ids = [room_id for commit_data in all_commits_data for room_id in commit_data['room_ids']]
+    all_room_ids = [room_id for commit_data in all_commits_data for room_id in
+                    commit_data['room_ids']]
     unique_room_ids = set(all_room_ids)
     if len(all_room_ids) != len(unique_room_ids):
         print("Есть неуникальные имена помещений!")

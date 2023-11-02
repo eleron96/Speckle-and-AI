@@ -1,9 +1,10 @@
-from .config import client, STREAM_ID
-from .wall_utilities import count_walls
-from .room_utilities import count_rooms
 from specklepy.api import operations
 from specklepy.transports.server import ServerTransport
+
+from .config import client, STREAM_ID
 from .db_handler import DatabaseHandler
+from .room_utilities import count_rooms
+from .wall_utilities import count_walls
 
 db = DatabaseHandler()
 
@@ -36,9 +37,9 @@ def print_total_summary(all_commits_data):
                                                                0) + count
 
     print(f"{'Общий итог:':-^35}")
-    print(f"Number of elements: {total_elements}")
-    print(f"Number of wall elements: {total_walls}")
-    print(f"Number of rooms: {total_rooms}")
+    print(f"{'Number of elements:':<25} {total_elements}")
+    print(f"{'Number of wall elements:':<25} {total_walls}")
+    print(f"{'Number of rooms:':<25} {total_rooms}")
     print(f"{'Типы квартир':-^35}")
     for room_type, count in total_room_types.items():
         print(f"{room_type} - {count}")
@@ -54,9 +55,6 @@ def process_single_commit(commit):
     object_count = getattr(res, 'totalChildrenCount', None)
     wall_count = count_walls(res)
     room_count, room_ids, room_types = count_rooms(res)
-
-
-
 
     db.save_result(commit.id, upload_date, file_name, object_count, wall_count)
 
@@ -74,6 +72,7 @@ def process_single_commit(commit):
     for room_type, count in room_types.items():
         print(f"{room_type} - {count}")
 
+
 def process_commits(commits_to_process=None):
     """Process multiple commits."""
     if not commits_to_process:
@@ -89,13 +88,13 @@ def process_commits(commits_to_process=None):
 
 
 def print_commit_summary(commit_data, branch_name):
-    print(f"Branch name: {branch_name}")
-    print(f"File name: {commit_data['file_name']}")
-    print(f"Commit ID: {commit_data['commit_id']}")
-    print(f"Upload date: {commit_data['upload_date']}")
-    print(f"Number of elements: {commit_data['object_count']}")
-    print(f"Number of wall elements: {commit_data['wall_count']}")
-    print(f"Number of rooms: {commit_data['room_count']}")
+    print(f"\033[1;32m{'Branch name:':<25} {branch_name}\033[0m")
+    print(f"{'File name:':<25} {commit_data['file_name']}")
+    print(f"{'Commit ID:':<25} {commit_data['commit_id']}")
+    print(f"{'Upload date:':<25} {commit_data['upload_date']}")
+    print(f"{'Number of elements:':<25} {commit_data['object_count']}")
+    print(f"{'Number of wall elements:':<25} {commit_data['wall_count']}")
+    print(f"{'Number of rooms:':<25} {commit_data['room_count']}")
     print("-" * 20)
 
 
@@ -113,7 +112,6 @@ def list_commits(branch_name, print_to_console=True):
     return commits
 
 
-
 def list_branches(print_to_console=True):
     """List available branches."""
     branches = client.branch.list(STREAM_ID)
@@ -121,4 +119,3 @@ def list_branches(print_to_console=True):
         for idx, branch in enumerate(branches):
             print(f"[{idx + 1}] {branch.name}")
     return [branch.name for branch in branches]
-

@@ -1,11 +1,16 @@
 def display_main_menu():
-    print("\n=== Speckle and AI Application ===")
-    print("[1] Start")
-    print("[2] View Previous Results")
-    print("[3] Check")
-    print("[4] Проверить уникальность имен помещений")
-    print("[5] Exit")
-    print("=" * 35)
+    """Display the main menu options."""
+    menu_width = 40
+
+    print("\n" + " Speckle and AI Application ".center(menu_width, "="))
+    print("[1]".ljust(4) + "Commit Info".ljust(menu_width - 4))
+    print("[2]".ljust(4) + "View Previous Results".ljust(menu_width - 4))
+    print("[3]".ljust(4) + "Project Info".ljust(menu_width - 4))
+    print("[4]".ljust(4) + "Check Potential Matches of Room Names".ljust(
+        menu_width - 4))
+    print("Type 'exit' to exit the program".ljust(menu_width))
+    print("=" * menu_width)
+
 
 def get_user_choice():
-    return input("Please select an option (1/2/3/4): ")
+    return input()

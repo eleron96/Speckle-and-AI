@@ -2,6 +2,7 @@ from speckle_and_ai.db_handler import DatabaseHandler
 
 db = DatabaseHandler()
 
+
 def view_previous_results_option():
     # Display previous results from the database
     results = db.get_previous_results()
