@@ -56,6 +56,7 @@ def process_single_commit(commit):
     wall_count = count_walls(res)
     room_count, room_ids, room_types = count_rooms(res)
 
+
     db.save_result(commit.id, upload_date, file_name, object_count, wall_count)
 
     return {

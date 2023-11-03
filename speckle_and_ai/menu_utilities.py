@@ -8,6 +8,12 @@ def display_main_menu():
     print("[3]".ljust(4) + "Project Info".ljust(menu_width - 4))
     print("[4]".ljust(4) + "Check Potential Matches of Room Names".ljust(
         menu_width - 4))
+    print("[5]".ljust(4) + "Check Last Commit Section Names".ljust(
+        menu_width - 4))
+    print("[6]".ljust(4) + "Check Area Float numbers".ljust(
+        menu_width - 4))
+    print("[7]".ljust(4) + "Check area discrepancy".ljust(
+        menu_width - 4))
     print("Type 'exit' to exit the program".ljust(menu_width))
     print("=" * menu_width)
 
