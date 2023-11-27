@@ -214,7 +214,8 @@ def check_last_commit_section_names():
         if not commits:
             print(f"No commits found for branch: {branch}")
             continue
-        last_commit = commits[-1]
+        commits.sort(key=lambda x: getattr(x, 'createdAt', None), reverse=True)
+        last_commit = commits[0]  # Выбор самого последнего коммита по дате
         try:
             # Теперь передаем stream_id вместе с last_commit и client
             transport = ServerTransport(client=client, stream_id=STREAM_ID)
@@ -236,7 +237,8 @@ def check_area_float_numbers():
         if not commits:
             print(f"No commits found for branch: {branch}")
             continue
-        last_commit = commits[-1]
+        commits.sort(key=lambda x: getattr(x, 'createdAt', None), reverse=True)
+        last_commit = commits[0]  # Выбор самого последнего коммита по дате
         try:
             # Теперь передаем stream_id вместе с last_commit и client
             transport = ServerTransport(client=client, stream_id=STREAM_ID)
@@ -249,7 +251,6 @@ def check_area_float_numbers():
 
 def check_area_discrepancy():
     branches = list_branches(print_to_console=False)
-
     def print_discrepancy_rooms(discrepancy_rooms, commit_message):
         print(f"\033[1mCommit Message: {commit_message}\033[0m")
         if discrepancy_rooms:
@@ -263,6 +264,8 @@ def check_area_discrepancy():
                 print(
                     f"                                Площадь Округленная.: "
                     f"\033[1m{room['rounded_area']}\033[0m")
+        else:
+            print("\033[92mПомещения квартирографированны\033[0m")
 
     for branch in branches:
         if branch.lower() == "main":  # Skip the main branch
