@@ -24,8 +24,6 @@ def get_commits(branch_name=None):
 def print_total_summary(all_commits_data):
     total_elements = sum(
         commit_data['object_count'] for commit_data in all_commits_data)
-    total_walls = sum(
-        commit_data['wall_count'] for commit_data in all_commits_data)
     total_rooms = sum(
         commit_data['room_count'] for commit_data in all_commits_data)
 
@@ -38,7 +36,6 @@ def print_total_summary(all_commits_data):
 
     print(f"{'Общий итог:':-^35}")
     print(f"{'Number of elements:':<25} {total_elements}")
-    print(f"{'Number of wall elements:':<25} {total_walls}")
     print(f"{'Number of rooms:':<25} {total_rooms}")
     print(f"{'Типы квартир':-^35}")
     for room_type, count in total_room_types.items():
@@ -53,18 +50,16 @@ def process_single_commit(commit):
     upload_date = getattr(commit, 'createdAt', None)
     file_name = getattr(commit, 'message', None)
     object_count = getattr(res, 'totalChildrenCount', None)
-    wall_count = count_walls(res)
     room_count, room_ids, room_types = count_rooms(res)
 
 
-    db.save_result(commit.id, upload_date, file_name, object_count, wall_count)
+    db.save_result(commit.id, upload_date, file_name, object_count)
 
     return {
         "commit_id": commit.id,
         "upload_date": upload_date,
         "file_name": file_name,
         "object_count": object_count,
-        "wall_count": wall_count,
         "room_count": room_count,
         "room_types": room_types,
         "room_ids": room_ids
@@ -94,7 +89,6 @@ def print_commit_summary(commit_data, branch_name):
     print(f"{'Commit ID:':<25} {commit_data['commit_id']}")
     print(f"{'Upload date:':<25} {commit_data['upload_date']}")
     print(f"{'Number of elements:':<25} {commit_data['object_count']}")
-    print(f"{'Number of wall elements:':<25} {commit_data['wall_count']}")
     print(f"{'Number of rooms:':<25} {commit_data['room_count']}")
     print("-" * 20)
 

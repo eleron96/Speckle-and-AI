@@ -14,7 +14,6 @@ def view_previous_results_option():
             print(f"Upload date: {result[1]}")
             print(f"File name: {result[2]}")
             print(f"Number of elements: {result[3]}")
-            print(f"Number of wall elements: {result[4]}")
         print("=" * 35)
     else:
         print("No previous results found.")

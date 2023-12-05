@@ -19,13 +19,13 @@ class DatabaseHandler:
             ''')
             conn.commit()
 
-    def save_result(self, commit_id, upload_date, file_name, number_of_elements, number_of_wall_elements):
+    def save_result(self, commit_id, upload_date, file_name, number_of_elements):
         with sqlite3.connect(self.db_name) as conn:
             cursor = conn.cursor()
             cursor.execute('''
-            INSERT INTO results (commit_id, upload_date, file_name, number_of_elements, number_of_wall_elements)
-            VALUES (?, ?, ?, ?, ?)
-            ''', (commit_id, upload_date, file_name, number_of_elements, number_of_wall_elements))
+            INSERT INTO results (commit_id, upload_date, file_name, number_of_elements)
+            VALUES (?, ?, ?, ?)
+            ''', (commit_id, upload_date, file_name, number_of_elements))
             conn.commit()
 
     def get_previous_results(self):
