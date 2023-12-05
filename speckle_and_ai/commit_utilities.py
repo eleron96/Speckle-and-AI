@@ -1,6 +1,7 @@
 from specklepy.api import operations
 from specklepy.transports.server import ServerTransport
 from tqdm import tqdm
+import re
 
 from speckle_and_ai.area_float_numbers import extract_area_float_numbers
 from speckle_and_ai.authentication import authenticate_client
@@ -33,6 +34,16 @@ confusing_letters = {
     'T': 'Т',
     'E': 'Е'
 }
+
+
+def identify_alphabets(text):
+    alphabets = set()
+    for char in text:
+        if re.match('[а-яА-Я]', char):
+            alphabets.add('кириллица')
+        elif re.match('[a-zA-Z]', char):
+            alphabets.add('латиница')
+    return ', '.join(alphabets) if alphabets else 'не определено'
 
 
 def check_room_name_uniqueness():
@@ -140,12 +151,9 @@ def check_option():
 
 
 def check_potential_matches():
-    """Check for potential room name matches across the latest commits of all
-    branches."""
     all_commits = []
     branches = list_branches(print_to_console=False)
     for branch in branches:
-        # Получаем только последний коммит каждой ветки
         commits = get_commits(branch)
         if commits:
             all_commits.append(commits[0])
@@ -161,20 +169,23 @@ def check_potential_matches():
     checked_pairs = set()
     found_matches = False
 
+    print("Проверка на использование алфавитов:")
+    for name in room_names:
+        alphabet_info = identify_alphabets(name)
+        print(f"{name} - Алфавиты: {alphabet_info}")
+
+    print("\nПроверка на потенциальное совпадение имен:")
     for name in room_names:
         matches = potential_matches(name, room_names.keys())
         for match in matches:
             if (name, match) not in checked_pairs and (
                     match, name) not in checked_pairs:
-                print()
-                print(
-                    f"\033[91m\033[1m{name} и {match} - потенциальные "
-                    f"совпадения\033[0m")
+                print(f"{name} и {match} - потенциальные совпадения")
                 found_matches = True
                 checked_pairs.add((name, match))
 
     if not found_matches:
-        print("\033[92m\033[1mПотенциальные совпадения не обнаружены\033[0m")
+        print("\033[92m\033[1mНе обнаружено\033[0m")
 
 
 def display_project_info():
@@ -249,8 +260,10 @@ def check_area_float_numbers():
             print(f"Error while extracting section name: {e}")
         print("-" * 40)  # Separator for readability
 
+
 def check_area_discrepancy():
     branches = list_branches(print_to_console=False)
+
     def print_discrepancy_rooms(discrepancy_rooms, commit_message):
         print(f"\033[1mCommit Message: {commit_message}\033[0m")
         if discrepancy_rooms:
@@ -283,8 +296,8 @@ def check_area_discrepancy():
             transport = ServerTransport(client=client, stream_id=STREAM_ID)
             res = operations.receive(last_commit.referencedObject, transport)
             room_section = extract_check_area_discrepancy(res)
-            print_discrepancy_rooms(room_section, getattr(last_commit, 'message', None))
+            print_discrepancy_rooms(room_section,
+                                    getattr(last_commit, 'message', None))
         except Exception as e:
             print(f"Error while extracting section name: {e}")
         print("-" * 40)  # Separator for readability
-
