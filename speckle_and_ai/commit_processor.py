@@ -4,7 +4,6 @@ from specklepy.transports.server import ServerTransport
 from .config import client, STREAM_ID
 from .db_handler import DatabaseHandler
 from .room_utilities import count_rooms
-from .wall_utilities import count_walls
 
 db = DatabaseHandler()
 
@@ -51,7 +50,6 @@ def process_single_commit(commit):
     file_name = getattr(commit, 'message', None)
     object_count = getattr(res, 'totalChildrenCount', None)
     room_count, room_ids, room_types = count_rooms(res)
-
 
     db.save_result(commit.id, upload_date, file_name, object_count)
 

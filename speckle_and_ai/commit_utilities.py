@@ -238,28 +238,6 @@ def check_last_commit_section_names():
         print("-" * 40)  # Separator for readability
 
 
-def check_area_float_numbers():
-    branches = list_branches(print_to_console=False)
-    for branch in branches:
-        if branch.lower() == "main":  # Skip the main branch
-            continue
-        print(f"Checking branch: \033[1;32m{branch}\033[0m")
-        commits = get_commits(branch_name=branch)
-        if not commits:
-            print(f"No commits found for branch: {branch}")
-            continue
-        commits.sort(key=lambda x: getattr(x, 'createdAt', None), reverse=True)
-        last_commit = commits[0]  # Выбор самого последнего коммита по дате
-        try:
-            # Теперь передаем stream_id вместе с last_commit и client
-            transport = ServerTransport(client=client, stream_id=STREAM_ID)
-            res = operations.receive(last_commit.referencedObject, transport)
-            room_section = extract_area_float_numbers(res)
-            print(room_section)
-        except Exception as e:
-            print(f"Error while extracting section name: {e}")
-        print("-" * 40)  # Separator for readability
-
 
 def check_area_discrepancy():
     branches = list_branches(print_to_console=False)
