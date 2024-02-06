@@ -16,12 +16,10 @@
 #         #         if hasattr(param_value, 'name'):
 #         #             print(f"{param_value.name}: {param_value.value}")
 #
-#         if hasattr(obj, "parameters"):
-#             param_obj = obj.parameters
-#             for param_name, param_value in param_obj.__dict__.items():
-#                 if hasattr(param_value,
-#                            'name') and param_value.name == 'Speech_Корпус.Секция короткое':
-#                     print(f"{param_value.name}: {param_value.value}")
+# if hasattr(obj, "parameters"): param_obj = obj.parameters for param_name,
+# param_value in param_obj.__dict__.items(): if hasattr(param_value, 'name')
+# and param_value.name == 'Speech_Корпус.Секция короткое': print(f"{
+# param_value.name}: {param_value.value}")
 #
 #     # If we have 'elements', we need to check each element inside 'elements'
 #     for element in getattr(obj, 'elements', []):
