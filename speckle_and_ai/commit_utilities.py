@@ -14,7 +14,6 @@ from speckle_and_ai.extract_check_area_discrepancy import \
 from speckle_and_ai.section_name_extractor import \
     extract_section_name_from_rooms
 
-
 confusing_letters = {
     'a': 'а',
     'o': 'о',
@@ -237,7 +236,6 @@ def check_last_commit_section_names():
         except Exception as e:
             print(f"Error while extracting section name: {e}")
         print("-" * 40)  # Separator for readability
-
 
 
 def check_area_discrepancy():

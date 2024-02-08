@@ -22,7 +22,7 @@ def main_menu():
                 check_potential_matches()
             elif choice == "5":
                 check_last_commit_section_names()
-            elif choice == "6":  #Сделать пункт проверки на площади
+            elif choice == "6":
                 check_area_discrepancy()
             elif choice.lower() == "exit":
                 print("Exiting the program. Goodbye!")
