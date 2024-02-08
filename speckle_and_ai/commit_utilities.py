@@ -14,6 +14,7 @@ from speckle_and_ai.extract_check_area_discrepancy import \
 from speckle_and_ai.section_name_extractor import \
     extract_section_name_from_rooms
 
+
 confusing_letters = {
     'a': 'а',
     'o': 'о',

@@ -5,6 +5,7 @@ from speckle_and_ai.db_utilities import view_previous_results_option
 from speckle_and_ai.menu_utilities import display_main_menu, get_user_choice
 
 
+
 def main_menu():
     try:
         while True:
