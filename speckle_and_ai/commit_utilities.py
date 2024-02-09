@@ -13,6 +13,8 @@ from speckle_and_ai.extract_check_area_discrepancy import \
     extract_check_area_discrepancy
 from speckle_and_ai.section_name_extractor import \
     extract_section_name_from_rooms
+from specklepy.objects import Base
+from typing import Dict, Any
 
 confusing_letters = {
     'a': 'а',
@@ -238,9 +240,53 @@ def check_last_commit_section_names():
         print("-" * 40)  # Separator for readability
 
 
+# def check_area_discrepancy():
+#     branches = list_branches(print_to_console=False)
+#
+#
+#
+#     def print_discrepancy_rooms(discrepancy_rooms, commit_message):
+#         print(f"\033[1mCommit Message: {commit_message}\033[0m")
+#         if discrepancy_rooms:
+#             print("\033[1;31mПомещения не квартирографированно!\033[0m")
+#             for room in discrepancy_rooms:
+#                 print(f"Помещение: \033[1m{room['id']}\033[0m")
+#                 print(
+#                     f"                                \033[1m{room['name']}\033[0m")
+#                 print(
+#                     f"                                Площадь Revit: \033[1m{room['area']}\033[0m")
+#                 print(
+#                     f"                                Площадь Округленная.: "
+#                     f"\033[1m{room['rounded_area']}\033[0m")
+#         else:
+#             print("\033[92mПомещения квартирографированны\033[0m")
+#
+#     for branch in branches:
+#         if branch.lower() == "main":  # Skip the main branch
+#             continue
+#         print(f"Checking branch: \033[1;32m{branch}\033[0m")
+#         commits = get_commits(branch_name=branch)
+#         if not commits:
+#             print(f"No commits found for branch: {branch}")
+#             continue
+#         commits.sort(key=lambda x: getattr(x, 'createdAt', None), reverse=True)
+#         last_commit = commits[0]  # Выбор самого последнего коммита по дате
+#
+#         try:
+#             # Теперь передаем stream_id вместе с last_commit и client
+#             transport = ServerTransport(client=client, stream_id=STREAM_ID)
+#             res = operations.receive(last_commit.referencedObject, transport)
+#             room_section = extract_check_area_discrepancy(res)
+#             print_discrepancy_rooms(room_section,
+#                                     getattr(last_commit, 'message', None))
+#         except Exception as e:
+#             print(f"Error while extracting section name: {e}")
+#         print("-" * 40)  # Separator for readability
+
+
+
 def check_area_discrepancy():
     branches = list_branches(print_to_console=False)
-
     def print_discrepancy_rooms(discrepancy_rooms, commit_message):
         print(f"\033[1mCommit Message: {commit_message}\033[0m")
         if discrepancy_rooms:
