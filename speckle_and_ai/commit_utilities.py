@@ -13,8 +13,8 @@ from speckle_and_ai.extract_check_area_discrepancy import \
     extract_check_area_discrepancy
 from speckle_and_ai.section_name_extractor import \
     extract_section_name_from_rooms
-from specklepy.objects import Base
-from typing import Dict, Any
+from speckle_and_ai.get_parameters import print_room_details
+
 
 confusing_letters = {
     'a': 'а',
@@ -298,8 +298,14 @@ def check_area_discrepancy():
                 print(
                     f"                                Площадь Revit: \033[1m{room['area']}\033[0m")
                 print(
-                    f"                                Площадь Округленная.: "
+                    f"                                Площадь Округленная: "
                     f"\033[1m{room['rounded_area']}\033[0m")
+                print(
+                    f"                                Уровень: "
+                    f"\033[1m{room['level_name']}\033[0m")
+                print(
+                    f"                                Номер помещения: "
+                    f"\033[1m{room['room_number']}\033[0m")
         else:
             print("\033[92mПомещения квартирографированны\033[0m")
 
