@@ -14,13 +14,17 @@ def get_object_parameters(obj: Base) -> Dict[str, Any]:
     parameters_data = obj.parameters
     result_dict = {}
 
-    # Получаем динамические имена параметров
     if isinstance(parameters_data, Base):
         dynamic_params = parameters_data.get_dynamic_member_names()
         for param_name in dynamic_params:
             param = getattr(parameters_data, param_name)
-            if isinstance(param, Base) and hasattr(param, 'value'):
-                result_dict[param_name] = getattr(param, 'value')
+            if isinstance(param, Base):
+                param_name = getattr(param, 'name', param_name)  # Используем человекочитаемое имя, если оно есть
+                if hasattr(param, 'value'):
+                    result_dict[param_name] = getattr(param, 'value')
+                else:
+                    # Если у параметра нет 'value', но есть другие поля, добавим их как словарь
+                    result_dict[param_name] = {attr: getattr(param, attr) for attr in param.get_dynamic_member_names()}
             else:
                 result_dict[param_name] = param
 
