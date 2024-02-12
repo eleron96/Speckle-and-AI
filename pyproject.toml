@@ -11,6 +11,7 @@ specklepy = "^2.17.6"
 plotly = "^5.18.0"
 python-decouple = "^3.8"
 tqdm = "^4.66.1"
+rich = "^13.7.0"
 
 
 [build-system]

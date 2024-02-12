@@ -1,20 +1,29 @@
-def display_main_menu():
-    """Display the main menu options."""
-    menu_width = 40
+from rich.console import Console
+from rich.panel import Panel
 
-    print("\n" + " Speckle and AI Application ".center(menu_width, "="))
-    print("[1]".ljust(4) + "Commit Info".ljust(menu_width - 4))
-    print("[2]".ljust(4) + "View Previous Results".ljust(menu_width - 4))
-    print("[3]".ljust(4) + "Project Info".ljust(menu_width - 4))
-    print("[4]".ljust(4) + "Check Potential Matches of Room Names".ljust(
-        menu_width - 4))
-    print("[5]".ljust(4) + "Check Last Commit Section Names".ljust(
-        menu_width - 4))
-    print("[6]".ljust(4) + "Check area discrepancy".ljust(
-        menu_width - 4))
-    print("Type 'exit' to exit the program".ljust(menu_width))
-    print("=" * menu_width)
+
+def display_main_menu():
+    """Display the main menu options using rich."""
+    console = Console()
+    menu_items = [
+        "[1] Commit Info",
+        "[2] View Previous Results",
+        "[3] Project Info",
+        "[4] Check Potential Matches of Room Names",
+        "[5] Check Last Commit Section Names",
+        "[6] Check area discrepancy",
+        "Type 'exit' to exit the program",
+    ]
+
+    # Создаем панель с заголовком и меню
+    menu_panel = Panel("\n".join(menu_items),
+                       title="Speckle and AI Application",
+                       subtitle="Main Menu",
+                       expand=False)
+
+    console.print(menu_panel)
 
 
 def get_user_choice():
-    return input()
+    console = Console()
+    return console.input("Please choose an option: ")
