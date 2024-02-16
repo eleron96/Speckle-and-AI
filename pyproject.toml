@@ -1,0 +1,20 @@
+[tool.poetry]
+name = "speckle-and-ai"
+version = "0.1.0"
+description = ""
+authors = ["nikogamsahurdia <eleron96@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+specklepy = "^2.17.6"
+plotly = "^5.18.0"
+python-decouple = "^3.8"
+tqdm = "^4.66.1"
+rich = "^13.7.0"
+prompt-toolkit = "^3.0.43"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
