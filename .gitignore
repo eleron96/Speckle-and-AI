@@ -4,6 +4,11 @@ __pycache__/
 speckle_and_ai/config.py
 .env
 speckle_and_ai/sample
+app_icon.ico
+build/
+dist/
+main.spec
+
 
 
 
