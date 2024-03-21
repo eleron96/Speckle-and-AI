@@ -39,6 +39,8 @@ confusing_letters = {
 
 
 def identify_alphabets(text):
+    if text is None:
+        return 'не определено'  # Возвращаем значение, если текст отсутствует
     alphabets = set()
     for char in text:
         if re.match('[а-яА-Я]', char):
@@ -46,6 +48,7 @@ def identify_alphabets(text):
         elif re.match('[a-zA-Z]', char):
             alphabets.add('латиница')
     return ', '.join(alphabets) if alphabets else 'не определено'
+
 
 
 def check_room_name_uniqueness():
@@ -79,15 +82,17 @@ def check_room_name_uniqueness():
 def potential_matches(name, all_names):
     matches = []
     for other_name in all_names:
+        # Check if either name is None
+        if name is None or other_name is None:
+            continue  # Skip if either is None
+
         if other_name != name and len(name) == len(other_name):
             is_potential_match = False
             for i in range(len(name)):
-                if name[i] in confusing_letters and confusing_letters[
-                    name[i]] == other_name[i]:
+                if name[i] in confusing_letters and confusing_letters[name[i]] == other_name[i]:
                     is_potential_match = True
                     break
-                elif other_name[i] in confusing_letters and confusing_letters[
-                    other_name[i]] == name[i]:
+                elif other_name[i] in confusing_letters and confusing_letters[other_name[i]] == name[i]:
                     is_potential_match = True
                     break
             if is_potential_match:
