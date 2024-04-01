@@ -8,7 +8,6 @@ from rich.console import Console
 console = Console()
 
 
-
 def main_menu():
     try:
         while True:

@@ -62,9 +62,9 @@ def process_single_commit(commit):
         "room_types": room_types,
         "room_ids": room_ids
     }
-    print(f"Тип помещения: \n")
-    for room_type, count in room_types.items():
-        print(f"{room_type} - {count}")
+    # print(f"Тип помещения: \n")
+    # for room_type, count in room_types.items():
+    #     print(f"{room_type} - {count}")
 
 
 def process_commits(commits_to_process=None):

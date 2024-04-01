@@ -13,6 +13,7 @@ python-decouple = "^3.8"
 tqdm = "^4.66.1"
 rich = "^13.7.0"
 prompt-toolkit = "^3.0.43"
+vulture = "^2.11"
 
 
 [build-system]
