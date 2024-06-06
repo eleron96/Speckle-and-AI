@@ -1,17 +1,19 @@
-from specklepy.api import operations
-from specklepy.transports.server import ServerTransport
 import re
 
-from speckle_and_ai.area_float_numbers import extract_area_float_numbers
+from specklepy.api import operations
+from specklepy.transports.server import ServerTransport
+
 from speckle_and_ai.authentication import authenticate_client
-from speckle_and_ai.commit_processor import list_commits, list_branches, \
-    process_commits, process_single_commit, get_commits, print_commit_summary, \
-    print_total_summary
+from speckle_and_ai.commit_processor import (
+    list_commits, list_branches, process_commits, process_single_commit,
+    get_commits, print_commit_summary, print_total_summary
+)
 from speckle_and_ai.config import client, STREAM_ID
 from speckle_and_ai.extract_check_area_discrepancy import \
     extract_check_area_discrepancy
 from speckle_and_ai.section_name_extractor import \
     extract_section_name_from_rooms
+
 from rich.console import Console
 from rich.progress import Progress
 from rich.table import Table
@@ -40,15 +42,14 @@ confusing_letters = {
 
 def identify_alphabets(text):
     if text is None:
-        return 'не определено'  # Возвращаем значение, если текст отсутствует
+        return 'Undefined'
     alphabets = set()
     for char in text:
         if re.match('[а-яА-Я]', char):
-            alphabets.add('кириллица')
+            alphabets.add('Cyrillic')
         elif re.match('[a-zA-Z]', char):
-            alphabets.add('латиница')
-    return ', '.join(alphabets) if alphabets else 'не определено'
-
+            alphabets.add('Latin')
+    return ', '.join(alphabets) if alphabets else 'Undefined'
 
 
 def check_room_name_uniqueness():
@@ -65,15 +66,13 @@ def check_room_name_uniqueness():
         for room_type, count in room_types.items():
             room_names[room_type] = 1
 
-    error_messages = set()  # Используем множество для хранения уникальных
-    # сообщений об ошибках
+    error_messages = set()
     for name in room_names:
         matches = potential_matches(name, room_names.keys())
         for match in matches:
-            # Убедимся, что сообщение добавляется в множество только один раз
             sorted_names = sorted([name, match])
-            error_message = f"\033[91m\033[1m{sorted_names[0]} и {sorted_names[1]} - потенциальные совпадения\033[0m"
-            error_messages.add(error_message)  # Добавляем сообщение в множество
+            error_message = f"\033[91m\033[1m{sorted_names[0]} и {sorted_names[1]} - Potential matches\033[0m"
+            error_messages.add(error_message)
 
     for error_message in error_messages:
         print(error_message)
@@ -89,10 +88,12 @@ def potential_matches(name, all_names):
         if other_name != name and len(name) == len(other_name):
             is_potential_match = False
             for i in range(len(name)):
-                if name[i] in confusing_letters and confusing_letters[name[i]] == other_name[i]:
+                if name[i] in confusing_letters and confusing_letters[
+                    name[i]] == other_name[i]:
                     is_potential_match = True
                     break
-                elif other_name[i] in confusing_letters and confusing_letters[other_name[i]] == name[i]:
+                elif other_name[i] in confusing_letters and confusing_letters[
+                    other_name[i]] == name[i]:
                     is_potential_match = True
                     break
             if is_potential_match:
@@ -181,38 +182,41 @@ def check_potential_matches():
     found_matches = False
 
     alphabet_table = Table(show_header=True, header_style="bold cyan")
-    alphabet_table.add_column("Имя комнаты", style="bold", width=20)
-    alphabet_table.add_column("Алфавиты", style="dim")
+    alphabet_table.add_column("Room name", style="bold", width=20)
+    alphabet_table.add_column("Alphabets", style="dim")
 
-    console.print("\n[bold]Проверка на использование алфавитов:[/bold]")
+    console.print("\n[bold]Check for the use of alphabets:[/bold]")
     for name in room_names:
         alphabet_info = identify_alphabets(name)
         # Применяем условную логику для стилизации
-        if "латиница" in alphabet_info:
-            alphabet_info = alphabet_info.replace("латиница", "[green]латиница[/green]")
-        if "кириллица" in alphabet_info:
-            alphabet_info = alphabet_info.replace("кириллица", "[red]кириллица[/red]")
+        if "Latin" in alphabet_info:
+            alphabet_info = alphabet_info.replace("Latin",
+                                                  "[green]Latin[/green]")
+        if "Cyrillic" in alphabet_info:
+            alphabet_info = alphabet_info.replace("Cyrillic",
+                                                  "[red]Cyrillic[/red]")
         alphabet_table.add_row(name, alphabet_info)
     console.print(alphabet_table)
 
-    console.print("\n[bold]Проверка на потенциальное совпадение имен:[/bold]")
+    console.print("\n[bold]Check for potential name matches:[/bold]")
     matches_table = Table(show_header=True, header_style="bold magenta")
-    matches_table.add_column("Имя 1", style="dim", width=12)
-    matches_table.add_column("Имя 2", style="dim", width=12)
-    matches_table.add_column("Статус", justify="right")
+    matches_table.add_column("Name 1", style="dim", width=12)
+    matches_table.add_column("Name 2", style="dim", width=12)
+    matches_table.add_column("Status", justify="right")
 
     for name in room_names:
         matches = potential_matches(name, room_names.keys())
         for match in matches:
-            if (name, match) not in checked_pairs and (match, name) not in checked_pairs:
-                matches_table.add_row(name, match, "потенциальные совпадения")
+            if (name, match) not in checked_pairs and (
+            match, name) not in checked_pairs:
+                matches_table.add_row(name, match, "Potential matches")
                 found_matches = True
                 checked_pairs.add((name, match))
 
     if found_matches:
         console.print(matches_table)
     else:
-        console.print("[green bold]Не обнаружено[/green bold]")
+        console.print("[green bold]Not detected[/green bold]")
 
 
 def display_project_info():
@@ -221,8 +225,8 @@ def display_project_info():
     branches = list_branches(print_to_console=False)
     for branch in branches:
         commits = get_commits(branch)
-        if commits:  # проверяем, есть ли коммиты в этом branch
-            latest_commit = commits[0]  # берем последний commit
+        if commits:
+            latest_commit = commits[0]
             commit_data = process_single_commit(latest_commit)
             all_commits_data.append(commit_data)
             print_commit_summary(commit_data, branch)
@@ -231,115 +235,71 @@ def display_project_info():
 
 
 def check_last_commit_section_names():
-    branches = list_branches(print_to_console=False)  # Ваша функция получения списка веток
+    branches = list_branches(print_to_console=False)
     console = Console()
-    output_messages = []  # Список для сбора сообщений для вывода
+    output_messages = []
 
     with Progress() as progress:
-        task = progress.add_task("[green]Checking branches...", total=len(branches))
+        task = progress.add_task("[green]Checking branches...",
+                                 total=len(branches))
 
         for branch in branches:
-            if branch.lower() == "main":  # Пропускаем ветку main
+            if branch.lower() == "main":
                 progress.advance(task)
                 continue
 
-            # Сохраняем сообщения вместо немедленного вывода
             output_messages.append(f"Checking branch: [bold green]{branch}[/]")
 
-            commits = get_commits(branch_name=branch)  # Ваша функция получения коммитов
+            commits = get_commits(branch_name=branch)
             if not commits:
                 output_messages.append(f"No commits found for branch: {branch}")
                 progress.advance(task)
                 continue
 
-            commits.sort(key=lambda x: getattr(x, 'createdAt', None), reverse=True)
-            last_commit = commits[0]  # Выбор последнего коммита
+            commits.sort(key=lambda x: getattr(x, 'createdAt', None),
+                         reverse=True)
+            last_commit = commits[0]
 
             try:
-                # Обработка вашего получения данных коммита
                 transport = ServerTransport(client=client, stream_id=STREAM_ID)
-                res = operations.receive(last_commit.referencedObject, transport)
+                res = operations.receive(last_commit.referencedObject,
+                                         transport)
                 room_section = extract_section_name_from_rooms(res)
 
                 if len(room_section) > 1:
-                    message = "[red]Внимание: в корпусе более 1 значения:[/]\n" \
-                              "[red]Корпус секция короткое:[/]"
+                    message = "[red]Warning: more than 1 value in the corpus:[/]\n" \
+                              "[red]Corpus section short:[/]"
                     for section in room_section:
                         message += f"\n[red]{section}[/]"
                     output_messages.append(message)
                 else:
                     for section in room_section:
-                        output_messages.append(f"Корпус секция короткое: {section}")
+                        output_messages.append(
+                            f"Corpus section short: {section}")
             except Exception as e:
-                output_messages.append(f"Error while extracting section name: {e}")
+                output_messages.append(
+                    f"Error while extracting section name: {e}")
 
-            output_messages.append("-" * 40)  # Разделитель
-            progress.advance(task)  # Обновляем прогресс после проверки каждой ветки
+            output_messages.append("-" * 40)
+            progress.advance(task)
 
-    # Выводим собранные сообщения после завершения работы прогресс-бара
     for message in output_messages:
         console.print(message)
 
 
-# def check_area_discrepancy():
-#     branches = list_branches(print_to_console=False)
-#
-#     def print_discrepancy_rooms(discrepancy_rooms, commit_message):
-#         print(f"\033[1mCommit Message: {commit_message}\033[0m")
-#         if discrepancy_rooms:
-#             print("\033[1;31mПомещения не квартирографированно!\033[0m")
-#             for room in discrepancy_rooms:
-#                 print(f"Помещение: \033[1m{room['id']}\033[0m")
-#                 print(
-#                     f"                                \033[1m{room['name']}\033[0m")
-#                 print(
-#                     f"                                Площадь Revit: \033[1m{room['area']}\033[0m")
-#                 print(
-#                     f"                                Площадь Округленная: "
-#                     f"\033[1m{room['rounded_area']}\033[0m")
-#                 print(
-#                     f"                                Уровень: "
-#                     f"\033[1m{room['level_name']}\033[0m")
-#                 print(
-#                     f"                                Номер помещения: "
-#                     f"\033[1m{room['room_number']}\033[0m")
-#         else:
-#             print("\033[92mПомещения квартирографированны\033[0m")
-#
-#     for branch in branches:
-#         if branch.lower() == "main":  # Skip the main branch
-#             continue
-#         print(f"Checking branch: \033[1;32m{branch}\033[0m")
-#         commits = get_commits(branch_name=branch)
-#         if not commits:
-#             print(f"No commits found for branch: {branch}")
-#             continue
-#         commits.sort(key=lambda x: getattr(x, 'createdAt', None), reverse=True)
-#         last_commit = commits[0]  # Выбор самого последнего коммита по дате
-#
-#         try:
-#             # Теперь передаем stream_id вместе с last_commit и client
-#             transport = ServerTransport(client=client, stream_id=STREAM_ID)
-#             res = operations.receive(last_commit.referencedObject, transport)
-#             room_section = extract_check_area_discrepancy(res)
-#             print_discrepancy_rooms(room_section,
-#                                     getattr(last_commit, 'message', None))
-#         except Exception as e:
-#             print(f"Error while extracting section name: {e}")
-#         print("-" * 40)  # Separator for readability
-
-
-
 console = Console()
+
+
 def check_area_discrepancy():
     branches = list_branches(print_to_console=False)
     discrepancy_reports = []
 
     with Progress() as progress:
-        task1 = progress.add_task("[cyan]Processing branches...", total=len(branches))
+        task1 = progress.add_task("[cyan]Processing branches...",
+                                  total=len(branches))
 
         for branch in branches:
-            if branch.lower() == "main":  # Пропускаем главную ветку
+            if branch.lower() == "main":
                 progress.advance(task1)
                 continue
 
@@ -348,41 +308,48 @@ def check_area_discrepancy():
                 progress.advance(task1)
                 continue
 
-            commits.sort(key=lambda x: getattr(x, 'createdAt', None), reverse=True)
-            last_commit = commits[0]  # Выбор самого последнего коммита по дате
+            commits.sort(key=lambda x: getattr(x, 'createdAt', None),
+                         reverse=True)
+            last_commit = commits[0]
 
             try:
                 # Теперь передаем stream_id вместе с last_commit и client
                 transport = ServerTransport(client=client, stream_id=STREAM_ID)
-                res = operations.receive(last_commit.referencedObject, transport)
+                res = operations.receive(last_commit.referencedObject,
+                                         transport)
                 room_section = extract_check_area_discrepancy(res)
-                discrepancy_reports.append((branch, getattr(last_commit, 'message', None), room_section))
+                discrepancy_reports.append((branch,
+                                            getattr(last_commit, 'message',
+                                                    None), room_section))
             except Exception as e:
-                discrepancy_reports.append((branch, "Ошибка извлечения: " + str(e), None))
+                discrepancy_reports.append(
+                    (branch, "Corpus section short: " + str(e), None))
 
             progress.advance(task1)
 
     # После обработки всех веток, выводим собранную информацию
     for branch, commit_message, rooms in discrepancy_reports:
         console.print(f"Checking branch: [bold green]{branch}[/bold green]")
-        console.print(f"Commit Message: [bold]{commit_message}[/bold]", style="bold green")
+        console.print(f"Commit Message: [bold]{commit_message}[/bold]",
+                      style="bold green")
         if rooms:
             print_discrepancy_rooms(rooms, commit_message)
         else:
-            console.print("Помещения квартирографированны", style="bold green")
-        console.print("-" * 40)  # Разделитель для читабельности
+            console.print("The rooms have been mapped", style="bold green")
+        console.print("-" * 40)
+
 
 def print_discrepancy_rooms(discrepancy_rooms, commit_message):
     if discrepancy_rooms:
-        console.print("Помещения не квартирографированно!", style="bold red")
+        console.print("The rooms have not been mapped!", style="bold red")
         table = Table(show_header=True, header_style="bold magenta")
         table.add_column("№", style="dim")
-        table.add_column("Помещение", style="dim")
-        table.add_column("Название")
-        table.add_column("Площадь Revit")
-        table.add_column("Площадь Округленная")
-        table.add_column("Уровень")
-        table.add_column("Номер помещения")
+        table.add_column("Rooms", style="dim")
+        table.add_column("Name")
+        table.add_column("Area in Revit")
+        table.add_column("Rounded Area")
+        table.add_column("Level")
+        table.add_column("Room Number")
 
         for index, room in enumerate(discrepancy_rooms, start=1):
             table.add_row(
@@ -395,3 +362,9 @@ def print_discrepancy_rooms(discrepancy_rooms, commit_message):
                 f"{room['room_number']}"
             )
         console.print(table)
+
+
+def check_residential_areas():
+    """This is a placeholder for the inspection of residential premises"""
+    console = Console()
+    console.print("This is a placeholder for the inspection of residential premises.")

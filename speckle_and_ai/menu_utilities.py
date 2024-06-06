@@ -12,6 +12,7 @@ def display_main_menu():
         "[4] Check Potential Matches of Room Names",
         "[5] Check Last Commit Section Names",
         "[6] Check area discrepancy",
+        "[7] Inspection of residential premises",
         "Type 'exit' to exit the program",
     ]
 

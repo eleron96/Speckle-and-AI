@@ -14,7 +14,11 @@ tqdm = "^4.66.1"
 rich = "^13.7.0"
 prompt-toolkit = "^3.0.43"
 vulture = "^2.11"
+pytest = "^8.1.1"
 
+
+[tool.poetry.group.dev.dependencies]
+faker = "^24.4.0"
 
 [build-system]
 requires = ["poetry-core"]

@@ -33,10 +33,10 @@ def print_total_summary(all_commits_data):
             total_room_types[room_type] = total_room_types.get(room_type,
                                                                0) + count
 
-    print(f"{'Общий итог:':-^35}")
+    print(f"{'Overall Total:':-^35}")
     print(f"{'Number of elements:':<25} {total_elements}")
     print(f"{'Number of rooms:':<25} {total_rooms}")
-    print(f"{'Типы квартир':-^35}")
+    print(f"{'Apartment Types':-^35}")
     for room_type, count in total_room_types.items():
         print(f"{room_type} - {count}")
     print("******************************")
@@ -62,10 +62,6 @@ def process_single_commit(commit):
         "room_types": room_types,
         "room_ids": room_ids
     }
-    # print(f"Тип помещения: \n")
-    # for room_type, count in room_types.items():
-    #     print(f"{room_type} - {count}")
-
 
 def process_commits(commits_to_process=None):
     """Process multiple commits."""

@@ -31,13 +31,13 @@ def get_streams(client):
 
 def select_stream(streams):
     """
-    Выбор stream пользователем.
+    User's selection of stream.
     """
-    console.print("[bold]Доступные проекты (streams):[/bold]", justify="left")
+    console.print("[bold]Available projects (streams):[/bold]", justify="left")
 
     table = Table(show_header=True, header_style="bold magenta")
-    table.add_column("Номер", style="dim")
-    table.add_column("Название", min_width=20)
+    table.add_column("Number", style="dim")
+    table.add_column("Name", min_width=20)
     table.add_column("ID", min_width=20)
 
     for i, stream in enumerate(streams):
@@ -46,31 +46,31 @@ def select_stream(streams):
     console.print(table, justify="left")
 
     try:
-        choice = int(console.input("Выберите номер проекта: ")) - 1
+        choice = int(console.input("Select the project number: ")) - 1
         selected_stream = streams[choice]
         console.clear()
         console.print(
-            f"Выбран проект: [bold]{selected_stream.name}[/bold] с ID: [bold]{selected_stream.id}[/bold]",
+            f"Project selected: [bold]{selected_stream.name}[/bold] with ID: [bold]{selected_stream.id}[/bold]",
             justify="left")
         return selected_stream
     except KeyboardInterrupt:
-        console.print("\nПрограмма прервана пользователем. Выход.",
+        console.print("\nThe program was interrupted by the user. Exit.",
                       style="bold red")
         exit(0)
     except ValueError:
-        console.print("Некорректный ввод. Пожалуйста, введите номер проекта.",
+        console.print("Invalid input. Please enter the project number.",
                       style="bold yellow")
         return select_stream(streams)
     except IndexError:
         console.print(
-            "Выбран некорректный номер проекта. Пожалуйста, выберите существующий номер.",
+            "Invalid project number selected. Please choose an existing number.",
             style="bold yellow")
         return select_stream(streams)
 
 
 def main():
     """
-    Основная функция программы, возвращает выбранный STREAM_ID.
+    The main function of the program returns the selected STREAM_ID.
     """
     client = authenticate_client()
     streams = get_streams(client)
@@ -78,7 +78,7 @@ def main():
         selected_stream = select_stream(streams)
         return selected_stream.id
     else:
-        console.print("Нет доступных проектов (streams).", style="bold red")
+        console.print("No available projects (streams).", style="bold red")
         exit(1)
 
 

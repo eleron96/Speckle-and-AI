@@ -1,9 +1,11 @@
-from speckle_and_ai.commit_utilities import check_option, \
-    display_project_info, check_potential_matches, \
-    check_last_commit_section_names, check_area_discrepancy
+from rich.console import Console
+
+from speckle_and_ai.commit_utilities import (
+    check_option, display_project_info, check_potential_matches,
+    check_last_commit_section_names, check_area_discrepancy, check_residential_areas
+)
 from speckle_and_ai.db_utilities import view_previous_results_option
 from speckle_and_ai.menu_utilities import display_main_menu, get_user_choice
-from rich.console import Console
 
 console = Console()
 
@@ -31,13 +33,16 @@ def main_menu():
             elif choice == "6":
                 console.clear()
                 check_area_discrepancy()
+            elif choice == "7":
+                console.clear()
+                check_residential_areas()
             elif choice.lower() == "exit":
                 print("Exiting the program. Goodbye!")
                 exit()
             else:
                 print("Invalid choice. Please select a valid option.")
     except KeyboardInterrupt:
-        print("\nПрограмма была прервана пользователем. Выход.")
+        print("\nThe program was interrupted by the user. Exit.")
 
 
 if __name__ == "__main__":

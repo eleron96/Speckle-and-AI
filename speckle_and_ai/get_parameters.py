@@ -19,11 +19,11 @@ def get_object_parameters(obj: Base) -> Dict[str, Any]:
         for param_name in dynamic_params:
             param = getattr(parameters_data, param_name)
             if isinstance(param, Base):
-                param_name = getattr(param, 'name', param_name)  # Используем человекочитаемое имя, если оно есть
+                param_name = getattr(param, 'name', param_name) # Use a human-readable name, if available
                 if hasattr(param, 'value'):
                     result_dict[param_name] = getattr(param, 'value')
                 else:
-                    # Если у параметра нет 'value', но есть другие поля, добавим их как словарь
+                    # If the parameter does not have a 'value' but has other fields, add them as a dictionary
                     result_dict[param_name] = {attr: getattr(param, attr) for attr in param.get_dynamic_member_names()}
             else:
                 result_dict[param_name] = param
@@ -33,7 +33,7 @@ def get_object_parameters(obj: Base) -> Dict[str, Any]:
 
 def print_room_details(room: Base):
     room_parameters = get_object_parameters(room)
-    print(f"Параметры помещения с elementId {getattr(room, 'elementId', 'Не указан')}:")
+    print(f"Parameters of the premises with elementId {getattr(room, 'elementId', 'Not specified')}:")
 
     for param_name, param_value in room_parameters.items():
         if isinstance(param_value, dict):
@@ -80,16 +80,16 @@ def main():
     root_object = client.object.get(stream_id=STREAM_ID, object_id=root_object_id)
 
     rooms = find_rooms_recursive(root_object)
-    print(f"Найдено помещений: {len(rooms)}")
+    print(f"Premises found: {len(rooms)}")
 
-    target_id = input("Введите ID элемента помещения: ")
+    target_id = input("Enter the ID of the room element: ")
 
     target_room = find_room_by_id(rooms, target_id)
 
     if target_room:
         print_room_details(target_room)
     else:
-        print(f"Помещение с elementId {target_id} не найдено.")
+        print(f"Premises with elementId {target_id} not found.")
 
 if __name__ == "__main__":
     main()
