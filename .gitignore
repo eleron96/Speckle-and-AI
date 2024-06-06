@@ -9,6 +9,7 @@ app_icon.ico
 build/
 dist/
 main.spec
+tests/
 
 
 
