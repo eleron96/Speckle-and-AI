@@ -2,8 +2,9 @@
 
 # Speckle Stream Processor 🚀
 
-**Speckle Stream Processor** is a robust terminal-based application designed to seamlessly fetch and process data from Speckle streams. It emphasizes commit details, room counting, and wall counting, offering a comprehensive insight into your Speckle data. With its intuitive terminal UI, you can either dive deep into specific commits or get an overview of all available commits.
+Speckle Stream Processor is a robust terminal-based application designed to seamlessly fetch and process data from Speckle streams. It emphasizes commit details, room counting, and wall counting, offering a comprehensive insight into your Speckle data. With its intuitive terminal UI, you can either dive deep into specific commits or get an overview of all available commits.
 
+A unique aspect of this program is that it was entirely created thanks to GPT-4 and management from my side. So, while the program might be considered primitive, the fact that it was assembled and developed with the help of AI makes it truly unique in its scope and execution.
 ## 📌 Table of Contents
 
 - [Installation](#installation)
@@ -52,14 +53,35 @@ poetry run python main.py
 ### Main Menu Options
 Upon starting the program, you will be presented with the main menu:
 
-```
-[1] Commit Info
-[2] View Previous Results
-[3] Project Info
-[4] Check Potential Matches of Room Names
-[5] Check Last Commit Section Names
-[6] Check Area Discrepancy
-[7] Inspection of Residential Premises
+````markdown
+Available projects (streams):                                                   
+┏━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━┓                  
+┃ Number ┃ Name                       ┃ ID                   ┃                  
+┡━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━┩                  
+│ 1      │ V------------2             │ e3------2e           │                  
+│ 2      │ V------------9             │ d8------12           │                  
+│ 3      │ IT_TEST                    │ 2e------35           │                  
+│ 4      │ D----------- 4             │ 96------f6           │                  
+│ 5      │ V------------3b            │ 45------f5           │                  
+│ 6      │ D----------- 3             │ f6------8e           │                  
+│ 7      │ О------------------------" │ d5------82           │                  
+│ 8      │ О-----------------------"  │ 37------28           │                  
+│ 9      │ !TEST                      │ f3------eb           │                  
+│ 10     │ IT_TEST_2                  │ 43------9f           │                  
+└────────┴────────────────────────────┴──────────────────────┘  
+````
+Next you can choose a project by entering the corresponding number. After selecting a project, you will be presented with the following options:
+```markdown
+╭─────── Speckle and AI Application ────────╮
+│ [1] Commit Info                           │
+│ [2] View Previous Results                 │
+│ [3] Project Info                          │
+│ [4] Check Potential Matches of Room Names │
+│ [5] Check Last Commit Section Names       │
+│ [6] Check area discrepancy                │
+│ [7] Inspection of residential premises    │
+│ Type 'exit' to exit the program           │
+╰──────────────── Main Menu ────────────────╯
 ```
 #### [1] Commit Info
 This option allows you to view detailed information about a specific commit. You can choose to view the commit details by entering the commit ID.
@@ -70,9 +92,9 @@ This option allows you to view detailed information about a specific commit. You
 ````
 ##### Post-processing, the application showcases results and archives them in the database.
 ```markdown
-File name:                    17.10.23
-Number of elements:           120
-Number of rooms:              5
+File name:                06.06.24
+Number of elements:       1730
+Number of rooms:          498
 -----------------------------------
 ```
 
@@ -92,22 +114,55 @@ Provides detailed information about the project, including metadata and current 
 
 Example Output:
 ```yaml
-Project Information:
-Branch: main
-Last Commit: 2023-10-14
-Number of elements: 120
-Number of rooms: 5
------------------------------------
+--------------------
+Branch name:              section-2
+File name:                06.06.24
+Commit ID:                7*******28
+Upload date:              2024-06-06 09:37:29.920000+00:00
+Number of elements:       18863
+Number of rooms:          5670
+--------------------
+----------Overall Total:-----------
+Number of elements:       34626
+Number of rooms:          10060
+----------Apartment Types----------
+3M - 203
+2E*(1L) - 726
+1M - 78
+1E*(ST-M) - 38
+ST-S - 12
+3E*(2M) - 1045
+4E*(3M) - 255
+6E*(5S) - 117
+.......
+******************************
 ```
 #### [4] Check Potential Matches of Room Names
-Analyzes the project data to find potential matches for room names, helping to identify inconsistencies or duplicates.
+Analyzes the project data to find potential matches for room names (for example between Latin 'M' and Cyrillic 'М' Alphabets), helping to identify inconsistencies or duplicates.
 
 Example Output:
 ```sql
-Check for potential name matches:
-Room1 и Room2 - Potential matches
-Room3 и Room4 - Potential matches
-...
+Check for the use of alphabets:
+┏━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━┓
+┃ Room name            ┃ Alphabets ┃
+┡━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━┩
+│ 3M                   │ Latin     │
+│ 2E*(1L)              │ Latin     │
+│ 1M                   │ Latin     │
+│ 1E*(ST-M)            │ Latin     │
+│ ST-M                 │ Latin     │
+│ МОП                  │ Cyrillic  │
+│ 2E*(1S)              │ Latin     │
+│ ВП                   │ Cyrillic  │
+│ ИП                   │ Cyrillic  │
+│ --                   │ Undefined │
+│ 4S                   │ Latin     │
+│ ST-S                 │ Latin     │
+│ 3E*(2M)              │ Latin     │
+│ Кровля               │ Cyrillic  │
+│ 4E*(3M)              │ Latin     │
+│ 6E*(5S)              │ Latin     │
+└──────────────────────┴───────────┘
 ```
 
 #### [5] Check Last Commit Section Names
@@ -115,10 +170,24 @@ Displays the section names from the last commit, providing insights into the str
 
 Example Output:
 ```less
-Last Commit Section Names:
-Section 1: Living Room
-Section 2: Bedroom
-...
+Checking branch: section-1
+Corpus section short: 1
+----------------------------------------
+Checking branch: section-3
+Corpus section short: 3
+----------------------------------------
+Checking branch: stlb
+Warning: more than 1 value in the corpus:
+Corpus section short:
+2
+1
+4
+P
+3
+----------------------------------------
+Checking branch: section-2
+Corpus section short: 2
+----------------------------------------
 ```
 
 #### [6] Check Area Discrepancy
@@ -126,10 +195,23 @@ Checks for discrepancies in the area calculations within the project, ensuring d
 
 Example Output:
 ```yaml
-Area Discrepancy Check:
-Room: Living Room, Revit Area: 50, Calculated Area: 48
-Room: Bedroom, Revit Area: 30, Calculated Area: 30
-...
+Checking branch: s3
+Commit Message: 04.04.24
+The rooms have been mapped
+----------------------------------------
+Checking branch: stlb
+Commit Message: 04.04.24
+The rooms have not been mapped!
+┏━━━┳━━━━━━━━━━┳━━━━━━━━━━━━━┳━━━━━━━━━━━━━┳━━━━━━━━━━━━━┳━━━━━━━━┳━━━━━━━━━━━━┓
+┃   ┃          ┃             ┃ Area in     ┃ Rounded     ┃        ┃ Room       ┃
+┃ № ┃ Rooms    ┃ Name        ┃ Revit       ┃ Area        ┃ Level  ┃ Number     ┃
+┡━━━╇━━━━━━━━━━╇━━━━━━━━━━━━━╇━━━━━━━━━━━━━╇━━━━━━━━━━━━━╇━━━━━━━━╇━━━━━━━━━━━━┩
+│ 1 │ 16144623 │ Лестничная  │ 8.30374999… │ 9.1         │ 1 этаж │ 2          │
+│   │          │ клетка      │             │             │        │            │
+│ 2 │ 16193586 │ Торговый    │ 104.547999… │ 104.100000… │ 1 этаж │ 2          │
+│   │          │ зал         │             │             │        │            │
+└───┴──────────┴─────────────┴─────────────┴─────────────┴────────┴────────────┘
+----------------------------------------
 ```
 
 #### [7] Inspection of Residential Premises
